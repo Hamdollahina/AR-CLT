@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AR Interaction with Gesture - A-Frame & AR.js</title>
+
+    <!-- A-Frame Library -->
+    <script src="./libs/aframe.min.js"></script>
+
+    <!-- AR.js Library for Image Tracking -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+
+    <!-- Gesture Detector Library -->
+    <script src="./libs/gesture-detector.js"></script>
+    <script src="./libs/gesture-handler.js"></script>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- AR Scene with AR.js and Gesture Detection -->
+    <a-scene
+      arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+      embedded
+      renderer="logarithmicDepthBuffer: true;"
+      vr-mode-ui="enabled: false"
+      gesture-detector
+      id="scene"
+    >
+      <!-- NFT Image Tracking -->
+      <a-nft
+        type="nft"
+        url="./images/cpu.jpg"
+        smooth="true"
+        smoothCount="10"
+        smoothTolerance=".01"
+        smoothThreshold="5"
+        raycaster="objects: .clickable"
+        emitevents="true"
+        cursor="fuse: false; rayOrigin: mouse;"
+      >
+        <!-- 3D Model with Gesture Interaction -->
+        <a-entity
+          id="model"
+          gltf-model="./3d_items/free_intel_cpu.glb"
+          scale="5 5 5"
+          position="0 0 0"
+          rotation="0 0 0"
+          class="clickable"
+          gesture-handler="minScale: 0.25; maxScale: 10"
+        ></a-entity>
+      </a-nft>
+
+      <!-- Camera for Viewing -->
+      <a-entity camera></a-entity>
+    </a-scene>
+  </body>
+</html>
