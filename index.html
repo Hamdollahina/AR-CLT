@@ -1,102 +1,15 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AR Interaction</title>
-    
-    <script src="./libs/mindar-image.prod.js"></script>
-    <script src="./libs/aframe.min.js"></script>
-    <script src="./libs/mindar-image-aframe.prod.js"></script>
-    <script src="./libs/gesture-detector.js"></script>
-    
-    <style>
-        html, body {
-            margin: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-    </style>
-
-    <script>
-        AFRAME.registerComponent('interaction-handler', {
-            schema: {
-                rotationFactor: { default: 5 },
-                minScale: { default: 0.5 },
-                maxScale: { default: 3 }
-            },
-
-            init: function () {
-                this.handleRotation = this.handleRotation.bind(this);
-                this.handleScale = this.handleScale.bind(this);
-                this.isVisible = false;
-                this.initialScale = this.el.object3D.scale.clone();
-                this.scaleFactor = 1;
-
-                // بررسی اینکه آیا مدل قابل مشاهده است
-                this.el.sceneEl.addEventListener("markerFound", () => {
-                    this.isVisible = true;
-                    console.log("Object is visible!");
-                });
-
-                this.el.sceneEl.addEventListener("markerLost", () => {
-                    this.isVisible = false;
-                    console.log("Object lost!");
-                });
-            },
-
-            update: function () {
-                if (this.isVisible) {
-                    this.el.sceneEl.addEventListener("onefingermove", this.handleRotation);
-                    this.el.sceneEl.addEventListener("twofingermove", this.handleScale);
-                } else {
-                    this.el.sceneEl.removeEventListener("onefingermove", this.handleRotation);
-                    this.el.sceneEl.removeEventListener("twofingermove", this.handleScale);
-                }
-            },
-
-            handleRotation: function (event) {
-                if (this.isVisible) {
-                    this.el.object3D.rotation.y += event.detail.positionChange.x * this.data.rotationFactor;
-                    this.el.object3D.rotation.x += event.detail.positionChange.y * this.data.rotationFactor;
-                    this.el.object3D.rotation.z += event.detail.positionChange.x * this.data.rotationFactor / 2; // اضافه کردن چرخش در محور Z برای نمایش زیر و رو
-                }
-            },
-
-            handleScale: function (event) {
-                if (this.isVisible) {
-                    this.scaleFactor *= 1 + event.detail.spreadChange / event.detail.startSpread;
-                    this.scaleFactor = Math.min(Math.max(this.scaleFactor, this.data.minScale), this.data.maxScale);
-
-                    this.el.object3D.scale.set(
-                        this.scaleFactor * this.initialScale.x,
-                        this.scaleFactor * this.initialScale.y,
-                        this.scaleFactor * this.initialScale.z
-                    );
-                }
-            }
-        });
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR with Three.js & MindAR.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/mindar@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@latest"></script>
 </head>
 <body>
-    <a-scene mindar-image="imageTargetSrc: ./targets.mind;" vr-mode-ui="enabled: false">
-        
-        <a-assets>
-            <a-asset-item id="avatarModel" src="./3d_items/free_intel_cpu.glb"></a-asset-item>
-        </a-assets>
-
-        <a-camera position="0 0 0"></a-camera>
-
-        <a-entity mindar-image-target="targetIndex: 0">
-            <a-entity 
-                id="model"
-                gltf-model="#avatarModel"
-                scale="1 1 1"
-                position="0 -0.25 0"
-                interaction-handler>
-            </a-entity>
-        </a-entity>
-
-    </a-scene>
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas"></canvas>
+    <script src="script.js"></script>
 </body>
 </html>
